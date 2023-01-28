@@ -5,6 +5,7 @@ import { editRecord, removeService, changeServiceField } from '../store/actionCr
 export default function RecordList() {
 
     const items = useSelector(state => state.recordList);
+    const filter = useSelector(state => state.filterRecords);
     const dispatch = useDispatch();
 
     const handleRemove = (id) => {
@@ -17,9 +18,17 @@ export default function RecordList() {
         dispatch(changeServiceField('price', price));
     };
 
+    let filteredItems;
+
+    if (filter === null || filter.filter === '') {
+        filteredItems = items;
+    } else {
+        filteredItems = items.filter(item => item.name.includes(filter.filter));
+    };
+
     return (
         <ul>
-            {items.map(o => <li key={o.id}>{o.name}: {o.price} 
+            {filteredItems.map(o => <li key={o.id}>{o.name}: {o.price} 
             <button onClick={() => handleEdit(o.id, o.name, o.price)}>Edit</button> 
             <button onClick={() => handleRemove(o.id)}>X</button></li>)}
         </ul>
